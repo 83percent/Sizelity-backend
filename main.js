@@ -6,7 +6,7 @@ const app = http.createServer((request, response) => {
     let _url = request.url;
     let f = null;
     const queryData = url.parse(_url, true).query;
-    if(_url === '/'){
+    if(_url === '/') {
         f = '/index.html';
     } else {
         f = '/wrong.html';
@@ -15,7 +15,7 @@ const app = http.createServer((request, response) => {
       return response.writeHead(404);
     }
     response.writeHead(200);
-    console.log(__dirname);
+    console.log(queryData);
     response.end(fs.readFileSync(__dirname + f));
 });
 app.listen(3001);
