@@ -1,21 +1,12 @@
-const http = require('http');
-const url = require("url");
-const fs = require('fs');
+const { request, response } = require('express');
+const express = require('express');
+const app = express();
+const port = 3001;
 
-const app = http.createServer((request, response) => {
-    let _url = request.url;
-    let f = null;
-    const queryData = url.parse(_url, true).query;
-    if(_url === '/') {
-        f = '/index.html';
-    } else {
-        f = '/wrong.html';
-    }
-    if(_url === '/favicon.ico'){
-      return response.writeHead(404);
-    }
-    response.writeHead(200);
-    console.log(queryData);
-    response.end(fs.readFileSync(__dirname + f));
+app.get('/',(request, response) => {
+    response.send('Hello World!!!AAA');
+}).get('/test', (request, response) => {
+    response.send("Test Page!");
 });
-app.listen(3001);
+
+app.listen(port);
