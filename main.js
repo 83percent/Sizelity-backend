@@ -5,8 +5,14 @@ const port = 3001;
 
 app.get('/',(request, response) => {
     response.send('Hello World!!!AAA');
-}).get('/test', (request, response) => {
+});
+app.get('/test', (request, response) => {
     response.send("Test Page!");
 });
+app.get('/wrong', (request, response) => {
+    response.send("Wrong!");
+});
 
-app.listen(port);
+app.listen(port, () => {
+    console.log("Get Start Application.");
+});
