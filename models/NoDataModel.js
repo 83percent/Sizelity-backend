@@ -1,6 +1,6 @@
 const Mongoose = require('mongoose');
-const COLL_NAME = 'product';
-const ProductSchema = new Mongoose.Schema({
+const COLL_NAME = 'nodata';
+const NoDataSchema = new Mongoose.Schema({
     praw : {
         domain : {
             type: String,
@@ -40,10 +40,10 @@ const ProductSchema = new Mongoose.Schema({
     size : []
 });
 
-/* ProductSchema.index({
+/* NoDataSchema.index({
     sname : 1,
     code : 1
 }, {
     unique : true
 }); */
-module.exports = Mongoose.model(COLL_NAME, ProductSchema);
+module.exports = Mongoose.model(COLL_NAME, NoDataSchema);

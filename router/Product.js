@@ -22,14 +22,15 @@ const Response_noData = {status : 404};
 const Response_success = {status : 200};
 // Read
 router.post('/get', (request, response) => {
+    console.log(request.body);
     try {
         const r_d = request.body; // Request Data
         
         let query = null;
         if(r_d._id) {
             query = {'_id' : r_d._id};
-        } else if(r_d.praw.domain) {
-            query = {'praw.code' : r_d.praw.code, 'praw.domain' : r_d.praw.domain};
+        } else if(r_d.domain) {
+            query = {'praw.code' : r_d.code, 'praw.domain' : r_d.domain}; // {domain : , code : , type :}
         }
 
         if(query === null) {
@@ -157,11 +158,12 @@ router.post('/delete', async (request, response) => {
 
 // Model.find( <query > ) => return [ <Object> ];
 const findUseQuery = (query, response) => {
-    ProductModel.find(query).then(doc => {
-        if(doc.length > 0) {
-            console.log("FIND DATA COUNT : ", doc.length);
+    ProductModel.findOne(query).then(doc => {
+        if(doc) {
+            console.log("FIND DATA : ", doc);
             response.send(doc);
         } else {
+            console.log("doc : ", doc);
             response.send(Response_noData);
         }
     }).catch(error => {
