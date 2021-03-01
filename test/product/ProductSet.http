@@ -1,0 +1,55 @@
+POST http://localhost:3001/product/set
+Content-Type: application/json
+{
+    "status" : 200, 
+    "praw" : {
+        "domain" : "jogunshop.com",
+        "type" : "branduid",
+        "code" : "27123",
+        "full" : "www.jogunshop.com/shop/shopdetail.html?branduid=27123"
+    },
+    "info" : {
+        "sname" : "조군샵",
+        "pname" : "데이런온 레직기 트임 데님",
+        "ptype" : "bottom",
+        "subtype" : "긴바지"
+    },
+    "size" : [
+        {
+            "name": "S",
+            "length" : 103.5,
+            "waist" : 39,
+            "crotch" : 31,
+            "hips" : 51,
+            "thigh" : 29.5,
+            "hem" : 20
+        },
+        {
+            "name": "M",
+            "length" : 104.5,
+            "waist" : 41,
+            "crotch" : 32,
+            "hips" : 52.5,
+            "thigh" : 31.5,
+            "hem" : 21  
+        },
+        {
+            "name": "L",
+            "length" : 105.5,
+            "waist" : 43,
+            "crotch" : 33,
+            "hips" : 54,
+            "thigh" : 33.5,
+            "hem" : 22
+        },
+        {
+            "name": "XL",
+            "length" : 106.5,
+            "waist" : 45,
+            "crotch" : 34,
+            "hips" : 55.5,
+            "thigh" : 35.5,
+            "hem" : 23
+        }
+    ]
+}

@@ -1,51 +1,24 @@
 // Module
-const __http = require('http');
-const __url = require('url');
-const __Mongo = require('./lib/db/Mongo');
-
-const __routeProduct = require('./router/product/Product');
-const __routeUser = require('./router/user/get');
+const express = require('express');
+const __Mongoose = require('./lib/db/Mongo');
+const cors = require('cors');
 
 // Field
 const PORT = 3001;
 
 /* ================================
-    Mongo DB Ready for Pooling
-================================ */
-__Mongo.establishConnection();
-
-
-
-
-/* ================================
             Server start
 ================================ */
-const server = __http.createServer((request, response) => {
-    const url = __url.parse(request.url, true);
-    let path = url.path.split("/");
+const server = express();
 
-    switch(path[1]) {
-        case "" : {
-            console.log("index")
-            response.writeHead(200);
-            response.end(path[1]);
-            break;
-        }
-        case "product" : {
-            __routeProduct.router(path[2], request, response);
-            break;
-        }
-        case "usr" : {
-            console.log("product");
-            response.writeHead(200);
-            response.end(path[1]);
-            break;
-        }
-        default : {
-            response.writeHead(404);
-            response.end("404. Not Found!!!!!");
-        }
-    }
+// Router Component
+const P_GETTER = require('./router/Product');
+//const P_SETTER = require('./router/product/P_SETTER');
+
+server.use(express.json());
+server.use(cors());
+server.use('/product', P_GETTER);
+
+server.listen(PORT, () => {
+    console.log(" Start Server.js PORT : ",PORT);
 });
-
-server.listen(PORT);
