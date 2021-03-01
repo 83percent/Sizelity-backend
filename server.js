@@ -12,12 +12,16 @@ const PORT = 3001;
 const server = express();
 
 // Router Component
-const P_GETTER = require('./router/Product');
-//const P_SETTER = require('./router/product/P_SETTER');
+const Product = require('./router/Product');
+const Shop = require('./router/Shop');
+const ShopUser = require('./router/S_User');
 
 server.use(express.json());
 server.use(cors());
-server.use('/product', P_GETTER);
+
+server.use('/product', Product);
+server.use('/su', ShopUser);
+server.use('/s', Shop);
 
 server.listen(PORT, () => {
     console.log(" Start Server.js PORT : ",PORT);
