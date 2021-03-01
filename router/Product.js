@@ -86,20 +86,32 @@ router.post('/set', (request, response) => {
 });
 // Update
 // Update Data Only One
-// Product Size or
-router.post('/update', (request, response) => {
+// Product Size or code
+router.post('/update', async (request, response) => {
     try {
-        const sname = request.body.info.sname;
-        const pcode = request.body.info.code;
-        ProductModel.find({sname : sname, code : pcode}).then(() => {
-            
-        }).catch(err => {
+        const data = request.body;
+        const query = getQuery(data);
+        ProductModel.updateOne(query,)
 
-        });
+
+
     } catch {
         response.send(Response_error);
     }
-}); 
+});
+
+
+const getUpdateQuery = (data) => {
+    if(!data.update) return null;
+}
+/*
+    {
+        ..
+        update : {
+            "TODO"
+        }
+    }
+*/
 // Update Data Many : ex) sname Change or praw(expect code)
 
 // Delete

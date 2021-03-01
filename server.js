@@ -14,7 +14,8 @@ const server = express();
 // Router Component
 const Product = require('./router/Product');
 const Shop = require('./router/Shop');
-const ShopUser = require('./router/S_User');
+const ShopUser = require('./router/Shop_User');
+const ClientUser = require('./router/Client_User');
 
 server.use(express.json());
 server.use(cors());
@@ -22,6 +23,7 @@ server.use(cors());
 server.use('/product', Product);
 server.use('/su', ShopUser);
 server.use('/s', Shop);
+server.use('/user', ClientUser);
 
 server.listen(PORT, () => {
     console.log(" Start Server.js PORT : ",PORT);
