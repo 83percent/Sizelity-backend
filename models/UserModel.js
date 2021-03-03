@@ -27,6 +27,8 @@ const UserModel = new mongoose.Schema({
         type: Boolean,
         default : false
     },
+    product : [],
+    after : [],
     reg_date : {
         type : Date,
         default : Date.now

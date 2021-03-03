@@ -32,7 +32,12 @@ router.post('/signin', (request, response) => {
         } else {
             console.log("RESULT",result);
             if(result && result._id) {
-                response.send(result);
+                const Obj = {
+                    _id : result._id,
+                    name : result.name,
+                    upwd : result.upwd
+                }
+                response.send(Obj);
             } else {
                 response.send(Response_noData);
             }
@@ -69,6 +74,63 @@ router.post('/signup', (request, response) => {
     } catch {
         response.send(Response_error);
     }
-    
+});
+
+
+// User Request MyProduct Data
+router.post('/getproduct',(request, response) => {
+    const data = request.body;
+    try {
+        if(data._id && data.upwd) {
+            UserModel.findOne({'_id' : data._id, 'upwd' : data.upwd}, (err,result) => {
+                if(err) {
+                    response.send(Response_error);
+                    return;
+                } else {
+                    console.log("FIND : User Product = ",result.product);
+                    response.send(result.product);
+                }
+            });
+        } else {
+            response.send(Response_invalid);
+            return;
+        }
+    } catch {
+        response.send(Response_error);
+    }
+});
+router.post('/setproduct',(request, response) => {
+    const data = request.body;
+    try {
+        if(data._id && data.upwd && data.data) {
+            UserModel.findOne({'_id' : data._id, 'upwd' : data.upwd}, (err,result) => {
+                if(err) {
+                    response.send(Response_error);
+                    return;
+                } else {
+                    console.log("FIND : User Product = ",result.product);
+                    result.product.push(data.data);
+                    result.product.updateOne((err, _result) => {
+                        if(err) {
+                            console.log(err);
+                            response.send(Response_error);
+                            return;
+                        } else {
+                            console.log("UPDATE : User Product = ",_result);
+                            response.send(_result);
+                        }
+                        
+                    });
+                }
+            });
+        } else {
+            response.send(Response_invalid);
+            return;
+        }
+    } catch(err) {
+        console.log(err);
+
+        response.send(Response_error);
+    }
 });
 module.exports = router;
