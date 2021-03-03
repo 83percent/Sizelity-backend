@@ -12,39 +12,29 @@ const Response_already = {status : 0};
 
 router.post('/signin', (request, response) => {
     const data = request.body;
+
+    console.log("Try Client Login : ", data);
+
     let query = null;
     if(data._id && data.upwd) {
         query = {"_id" : data._id, "upwd":data.upwd};
+    } else if(data.uid && data.upwd) {
+        query = {"uid": data.uid, "upwd" : data.upwd};
     } else {
-        if(data.uid && data.upwd) query = {"uid": data.uid, "upwd" : data.upwd};
-    }
-    if(query === null) {
         response.send(Response_invalid);
         return;
     }
-    UserModel.find(query, (err, result) => {
+    UserModel.findOne(query, (err, result) => {
+        console.log("Try Client Login FIND DATA : ", result);
         if(err) {
             response.send(Response_error);
             return;
         } else {
             console.log("RESULT",result);
-            const count = result.length
-            if(count < 0) {
-                response.send(Response_error);
-            }  else {
-                switch(count) {
-                    case 0 : {
-                        response.send(Response_noData);
-                        break;
-                    }
-                    case 1 : {
-                        response.send(result[0]);
-                        break;
-                    }
-                    default : {
-                        break;
-                    }
-                }
+            if(result && result._id) {
+                response.send(result);
+            } else {
+                response.send(Response_noData);
             }
         }
     });

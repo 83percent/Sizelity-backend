@@ -45,6 +45,7 @@ router.post('/get', (request, response) => {
     }
 });
 router.get('/get', (request, response) => {
+    console.log("Try get Product Data <Method $GET>.");
     console.log(request.query);
     try {
         const shop = request.query.shop;
