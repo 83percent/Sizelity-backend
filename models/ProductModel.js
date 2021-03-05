@@ -37,7 +37,9 @@ const ProductSchema = new Mongoose.Schema({
             require : true
         }
     },
-    size : []
+    size : [
+        
+    ]
 });
 
 /* ProductSchema.index({
