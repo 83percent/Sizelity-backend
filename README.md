@@ -16,3 +16,8 @@ Goal, Express.js + MongoDB + React : Make full service web SPA project.
 
 # 2021-03-01
 + Add Code : Express + Mongoose 
+
+# 2021-03-06
++ User Account Sign in/up Fetch.
+
+- Problem : User Account in sub document of MongoDB can't insert "praw".
