@@ -11,20 +11,26 @@ const Response_noData = {status : 404};
 const Response_already = {status : 0};
 
 
-
+// Account
 // Login
 router.post('/signin', async (request, response) => {
-
     const result = await UserAccount.get(request);
     console.log(result);
     response.send(result);
 })
 
-// Join
+// Create User
 router.post('/signup', async (request, response) => {
-    console.log(request.bdoy);
+    console.log("요청 데이터 : ", request.body)
     const result = await UserAccount.set(request);
+    response.send(result);
 });
+
+router.post('remove', async (request, reponse) => {
+    
+});
+
+
 
 
 // User Request MyProduct Data

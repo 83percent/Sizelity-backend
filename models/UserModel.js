@@ -14,12 +14,12 @@ const UserProductModel = new mongoose.Schema({
         }
     },
     site : {
-        /* type : {
+        type : {
             domain : { type : String },
             type : { type : String, require: true },
             code : { type : String },
             full : { type : String }
-        } */
+        }
     },
     size : {
         type : {
@@ -56,7 +56,7 @@ const UserModel = new mongoose.Schema({
         default : false
     },
     product : {
-        type :[ UserProductModel ]
+        type : [UserProductModel]
     },
     after : [],
     reg_date : {
