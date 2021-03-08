@@ -22,7 +22,7 @@ Goal, Express.js + MongoDB + React : Make full service web SPA project.
 
 - Problem : User Account in sub document of MongoDB can't insert "praw".
 
-# 2021-03-06
+# 2021-03-09
 + ADD Module : Response Status Code 
 + ADD Router : router /after
 Client can save will compare product informaion.
