@@ -1,14 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const UserModel = require('../models/UserModel');
 
 const UserProduct = require('./User/Product.js');
 const UserAccount = require('./User/Account.js');
-
-const Response_error = {status : -200};
-const Response_invalid = {status : -404};
-const Response_noData = {status : 404};
-const Response_already = {status : 0};
 
 
 // Account
@@ -48,5 +42,9 @@ router.post('/setproduct',(request, response) => {
         console.log("ADD User Product : ", result);
         response.send(result);
     })();
+});
+
+router.post('/updateproduct', (request, response) => {
+    
 });
 module.exports = router;

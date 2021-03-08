@@ -13,7 +13,7 @@ const UserProductModel = new mongoose.Schema({
             subType : { type: String }
         }
     },
-    site : {
+    praw : {
         type : {
             domain : { type : String },
             type : { type : String, require: true },
@@ -27,7 +27,24 @@ const UserProductModel = new mongoose.Schema({
         }
     }
 });
-
+const AfterModel = new mongoose.Schema({
+    praw : {
+        type : {
+            domain : {type : String, require: true},
+            code : {type : String, require: true},
+            full : {type: String, required: true}
+        },
+        required : true
+    },
+    info : {
+        type : {
+            sname : {type: String, required: true},
+            pname : {type: String, required: true},
+            subType : {type: String, required: true}
+        },
+        required : true
+    }
+});
 const UserModel = new mongoose.Schema({
     name : {
         type : String,
@@ -58,7 +75,7 @@ const UserModel = new mongoose.Schema({
     product : {
         type : [UserProductModel]
     },
-    after : [],
+    after : [AfterModel],
     reg_date : {
         type : Date,
         default : Date.now
@@ -94,4 +111,19 @@ module.exports = mongoose.model(COLL_NAME, UserModel);
                 }
             }
         }
+*/
+/*
+    after format
+{
+    praw : {
+        domain : String,
+        code : String,
+        full : String
+    }
+    info : {
+        sname : String,
+        pname : String,
+        subType : String
+    }
+}
 */
