@@ -5,27 +5,19 @@ const COLL_NAME = "user";
 const UserProductModel = new mongoose.Schema({
     status : { type: Number, default: -200, require: true },
     info : {
-        type : {
-            sname : { type : String },
-            pname : { type : String },
-            nick : { type : String },
-            ptype : { type : String, require: true },
-            subType : { type: String }
-        }
+        sname : { type : String },
+        pname : { type : String },
+        nick : { type : String },
+        ptype : { type : String, require: true },
+        subtype : { type: String }
     },
     praw : {
-        type : {
-            domain : { type : String },
-            type : { type : String, require: true },
-            code : { type : String },
-            full : { type : String }
-        }
+        domain : { type : String, require: true },
+        type : { type : String, require: true },
+        code : { type : String, require: true },
+        full : { type : String, require: true}
     },
-    size : {
-        type : {
-            name : {type : String, require: true}
-        }
-    }
+    size : {}
 });
 const AfterModel = new mongoose.Schema({
     praw : {
@@ -34,15 +26,13 @@ const AfterModel = new mongoose.Schema({
             code : {type : String, require: true},
             full : {type: String, required: true}
         },
-        required : true
     },
     info : {
         type : {
             sname : {type: String, required: true},
             pname : {type: String, required: true},
-            subType : {type: String, required: true}
+            subtype : {type: String, required: true}
         },
-        required : true
     }
 });
 const UserModel = new mongoose.Schema({
@@ -72,9 +62,7 @@ const UserModel = new mongoose.Schema({
         type: Boolean,
         default : false
     },
-    product : {
-        type : [UserProductModel]
-    },
+    product : [UserProductModel],
     after : [AfterModel],
     reg_date : {
         type : Date,

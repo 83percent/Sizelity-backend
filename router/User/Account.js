@@ -1,25 +1,31 @@
 const UserModel = require("../../models/UserModel");
-
-const Response_noData = {status : 404};
-const Response_error = {status : -200};
-const Response_invalid = {status : -404};
-const Response_already = {status : 0};
-
+const ResponseCode = require("../../lib/response-code/response-code");
 
 const get = async (request) => {
     try {
         const data = request.body;
-        // {uid , upwd}
-        if(data.uid && data.upwd) {
-            const result = await UserModel.findOne(data);
-            if(result) {
-                return result;
-            } else {
-                return Response_noData;
+        let findQuery = null;
+        if(data._id && data.upwd) {
+            findQuery = {"_id":data._id, "upwd":data.upwd};
+        } else if(data.uid && data.upwd) {
+            findQuery = {"uid":data.uid, "upwd":data.upwd};
+        } else {
+            return ResponseCode.invalid;
+        }
+        const result = await UserModel.findOne(findQuery);
+
+        if(result && result._id && result.upwd &&result.name) {
+            return {
+                _id : result._id,
+                name : result.name,
+                upwd : result.upwd
             }
+        } else {
+            return ResponseCode.noData;
         }
     } catch(error) {
         console.log(error);
+        return ResponseCode.error;
     }
 }
 
@@ -50,21 +56,21 @@ const set = async (request) => {
             console.log("SAVE 결과 : ", result );
             if(result._id) {
                 return {status : 200};
-            } else return Response_error;
+            } else return ResponseCode.error;
         } catch(error) {
-            if(error.name === 'ValidationError') return Response_invalid;
+            if(error.name === 'ValidationError') return ResponseCode.invalid;
             switch(error.code) {
                 case 11000 : {
                     // Already Exist
-                    return Response_already;
+                    return ResponseCode.already;
                 }
                 default : {
-                    return Response_error;
+                    return ResponseCode.error;
                 }
             }
         }
     } else {
-        return Response_invalid;
+        return ResponseCode.invalid;
     }
 }
 
@@ -84,7 +90,7 @@ const update = async (request) => {
 
     } else {
         // 인증에 필요한 데이터가 들어오지 않음
-        return Response_invalid;
+        return ResponseCode.invalid;
     }
 }
 module.exports = {

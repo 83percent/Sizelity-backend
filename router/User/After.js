@@ -1,28 +1,26 @@
 const UserModel = require("../../models/UserModel");
-const ResponseCode = require("../../models/Response");
+const ResponseCode = require("../../lib/response-code/response-code");
 
 const set = async (request) => {
     try {
         const data = request.body;
         if(!data._id && !data.upwd) return ResponseCode.error;
         const document = await getAfter(data._id, data.upwd);
-
         if(document) {
-            const afterArray = document.after;
-            const is = afterArray.after.filter((afterArray) => {
-                return (afterArray.praw.domain === data.product.domain && afterArray.praw.code === data.product.code);
+            const is = document.after.filter((element) => {
+                return (element.praw.domain === data.product.praw.domain && element.praw.code === data.product.praw.code);
             });
+            console.log("중복되는 데이터 : ", is);
             if(is.length === 0) {
                 // 중복데이터 없음.
-                afterArray.push(data.product);
-                await document.save((err, result) => {
+                document.after.push(data.product);
+                await document.save((err) => {
                     if(err) {
                         console.log("After Set Error : ", err);
                         return ResponseCode.error;
-                    } else {
-                        return result;
                     }
                 });
+                return ResponseCode.success;
             } else return ResponseCode.already;
 
         } else {
@@ -51,12 +49,23 @@ const remove = async (request) => {
         const data = request.body;
         if(!data._id && !data.upwd) return ResponseCode.error;
         const document = await getAfter(data._id, data.upwd);
-
         if(document) {
-            const d = await document.after.id(data.product._id).remove;
-            if(d.deleteCount === 1) return ResponseCode.success;
-            else return ResponseCode.noData;
+            let count = 0;
+            for(const _id of data.product) {
+                const d = await document.after.id(_id)
+                if(d !== null && d._id) {
+                    d.remove();
+                    count++;
+                }
+            }
+            if(count > 0) {
+                document.save(err => {
+                    if(err) return ResponseCode.error;
+                });
+                return ResponseCode.success;
+            } else return ResponseCode.noData;
         } else {
+            console.log("이용자 데이터 정보 없음")
             return ResponseCode.noData;
         }
     } catch(error) {
@@ -64,15 +73,18 @@ const remove = async (request) => {
         return ResponseCode.error;
     }
 }
-const getAfter = (id, pw) => {
-    return new Promise((resolve) => {
+const getAfter = async (id, pw) => {
+
         try {
-            const userDoc = UserModel.findOne({'_id' : id, 'upwd' : pw});
-            if(userDoc._id) resolve(userDoc);
-            else resolve(null);
-        } catch {resolve(null);}
-    });
-    
+            const userDoc = await UserModel.findOne({'_id' : id, 'upwd' : pw});
+            console.log("유저 정보 : ",userDoc);
+            if(userDoc._id) return userDoc;
+            else return null;
+        } catch(error) {
+            console.log(error);
+            return null;
+        }
+ 
 }
 
 module.exports = {
