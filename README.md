@@ -6,7 +6,7 @@ First study backend of 'Node.js'
 Goal, Express.js + MongoDB + React : Make full service web SPA project.
 
 # Code At
-+ Front : React.js ( ES6, HTML5, CSS3 )
++ Front : React.js ( ES6, HTML5, CSS3 ) - https://github.com/83percent/Sizelity
 + Back : Node.js , Express
 + DataBase : MongoDB ( Mongoose )
 
@@ -19,5 +19,13 @@ Goal, Express.js + MongoDB + React : Make full service web SPA project.
 
 # 2021-03-06
 + User Account Sign in/up Fetch.
+
+- Problem : User Account in sub document of MongoDB can't insert "praw".
+
+# 2021-03-09
++ ADD Module : Response Status Code 
++ ADD Router : router /after
+Client can save will compare product informaion.
+MongoDB sub document after:[] in UserModel
 
 - Problem : User Account in sub document of MongoDB can't insert "praw".
