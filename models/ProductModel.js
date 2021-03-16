@@ -38,6 +38,8 @@ const ProductSchema = new Mongoose.Schema({
         }
     },
     size : []
+}, {
+    versionKey: false
 });
 
 /* ProductSchema.index({
