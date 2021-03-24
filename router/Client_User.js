@@ -8,9 +8,11 @@ const UserAfter = require('./User/After');
 // Account
 // Login
 router.post('/signin', async (request, response) => {
-    console.log("로그인 요청 데이터 : ", request.body)
+
+    console.log("로그인 요청 데이터 : ", request.cookies);  
     const result = await UserAccount.get(request);
     console.log("로그인 시도 결과 : ", result);
+    response.header("Access-Control-Allow-Origin", "*");
     response.send(result);
 })
 
@@ -24,9 +26,6 @@ router.post('/signup', async (request, response) => {
 router.post('/signout', async (request, reponse) => {
     
 });
-
-
-
 
 // User Request MyProduct Data
 router.post('/getproduct',(request, response) => {

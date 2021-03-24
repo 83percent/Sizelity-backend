@@ -1,7 +1,13 @@
 // Module
 const express = require('express');
-const __Mongoose = require('./lib/db/Mongo');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+
+const __Mongoose = require('./lib/db/Mongo');
+
 
 // Field
 const PORT = 3001;
@@ -18,9 +24,24 @@ const ShopUser = require('./router/Shop_User');
 const ClientUser = require('./router/Client_User');
 const EventRouter = require('./router/Event_Router');
 
-server.use(express.json());
-server.use(cors());
 
+
+server.use(cors());
+server.use(express.json());
+
+server.use(cookieParser());
+
+server.use(passport.initialize());
+server.use(passport.session());
+
+
+server.options('/*', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Header", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods","GET, PUT, POST, DELETE, OPTIONS");
+
+    res.send();
+});
 server.use('/product', Product);
 server.use('/su', ShopUser);
 server.use('/s', Shop);

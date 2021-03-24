@@ -7,10 +7,13 @@
     "lib": "lib"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "mongodb": "^3.6.4",
-    "mongoose": "^5.11.18"
+    "mongoose": "^5.11.18",
+    "passport": "^0.4.1"
   },
   "devDependencies": {},
   "scripts": {
