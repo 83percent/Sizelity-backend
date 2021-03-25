@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
+const LocalStrategy = require('passport-local').Strategy;
+const passport = require('passport');
+const UserModel = require("../models/UserModel");
+const bcrypt = require('bcrypt');
+
 const UserProduct = require('./User/Product.js');
 const UserAccount = require('./User/Account.js');
 const UserAfter = require('./User/After');
@@ -16,15 +21,16 @@ router.post('/signin', async (request, response) => {
     response.send(result);
 })
 
+
+
 // Create User
 router.post('/signup', async (request, response) => {
-    console.log("요청 데이터 : ", request.body)
     const result = await UserAccount.set(request);
     response.send(result);
 });
 
 router.post('/signout', async (request, reponse) => {
-    
+    request.logout();
 });
 
 // User Request MyProduct Data
@@ -82,4 +88,52 @@ router.post('/removeafter', (request, response) => {
         response.send(result);
     })();
 });
+
+router.post('/', passport.authenticate('local'), 
+    function(req, res) {
+        console.log("passpord Info : ", req.user);
+        if(req.user) {
+            console.log("로그인 확인.", req.user);
+            res.send({
+                _id: req.user.id,
+                name: req.user.name
+            });
+        } else {
+            res.send({status:404})
+        }
+    }
+);
+passport.use(new LocalStrategy (
+     function(username, password, done) {
+         console.log("로그인 시도");
+         console.log(username);
+         console.log(password);
+
+         UserModel.findOne({uid: username}, (err, user) => {
+            if(err) return done(err);
+            if(!user) return done(null, false, {message: 'Incorrect id'});
+            try {
+                const match = bcrypt.compareSync(password, user.upwd);
+                if(match) {
+                    return done(null, user);
+                } else {
+                    return done(null, false, {message: 'Incorrect password'});
+                }
+            } catch(e) {
+                return done(e);
+            }
+        });
+    }
+));
+passport.serializeUser((user, done) => {
+    console.log("serialize");
+    done(null, user.id)
+});
+passport.deserializeUser((id, done) => {
+    UserModel.findById(id, (err, user) => {
+        console.log("deserialize");
+        done(err, user);
+    })
+});
+
 module.exports = router;

@@ -1,9 +1,7 @@
 // Module
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 
 const __Mongoose = require('./lib/db/Mongo');
@@ -24,16 +22,17 @@ const ShopUser = require('./router/Shop_User');
 const ClientUser = require('./router/Client_User');
 const EventRouter = require('./router/Event_Router');
 
-
-
+server.use(express.static('public'));
 server.use(cors());
 server.use(express.json());
-
-server.use(cookieParser());
-
+server.use(session({
+    secret: '83percent',
+    resave: false,
+    saveUninitialized : false,
+    cookie: {secure: false}
+}));
 server.use(passport.initialize());
 server.use(passport.session());
-
 
 server.options('/*', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
