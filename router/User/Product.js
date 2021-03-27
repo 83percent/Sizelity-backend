@@ -4,78 +4,60 @@ const ResponseCode = require("../../lib/response-code/response-code");
     User Fav Product setter / getter
 */
 
-const get = async (request) => {
+const get = async (id) => {
     try {
-        const data = request.body;
-        if(!data._id && !data.upwd) return ResponseCode.invalid;
-        const doc = await UserModel.findOne({'_id' : data._id, 'upwd' : data.upwd});
-        if(doc) return doc.product;
-        else return ResponseCode.noData;
-        
-    } catch(error) {
-        console.error(error);
+        console.log(id);    
+        const user = await UserModel.findById(id);
+        if(user) return user.product;
+        else return ResponseCode.noUser;
+    } catch {
         return ResponseCode.error;
-    } 
-}
+    }
+} // GET : /user/product/:id
 
-const set = async (request) => {
+const set = async (id, data) => {
     try {
-        const data = request.body;
-        // 1. 회원 여부 확인
-        if(!data._id && !data.upwd) return ResponseCode.invalid;
-        const doc = await UserModel.findOne({'_id' : data._id, 'upwd' : data.upwd});
-        if(doc === null) throw ResponseCode.noUser;
-        if(!doc.product) doc.product = new Array([]);
-        else {
-            // 추가하려는 데이터 중복확인
-            const is = doc.product.filter((element) => {
-                return (element.praw.domain === data.product.praw.domain && element.praw.code === data.product.praw.code); 
-            });
-            if(is.length !== 0) {
-               return ResponseCode.already;
-            }
-        }
-        // 3. 중복확인이 필요없거나, 중복이 안된경우 저장
-        console.log("추가 직전의 데이터 : ",data.product);
-        doc.product.push(data.product);
-        await doc.save(err => {
+        const user = await UserModel.findById(id);
+        console.log("Client data : ", user);
+        if(!user) return ResponseCode.noUser;
+        // 중복확인
+        const is = user.product.filter((element) => {
+            return (element.praw.domain === data.product.praw.domain && element.praw.code === data.product.praw.code); 
+        });
+        if(is.length !== 0) return ResponseCode.already;
+
+        user.product.push(data.product);
+        const result = await user.save(err => {
             if(err) console.log(err);
             return ResponseCode.error;
         });
-        return ResponseCode.success;
-        
-    } catch(error) {
-        console.log(error);
-        return ResponseCode.invalid;
+        if(!result) return ResponseCode.success;
+        else return ResponseCode.error;
+    } catch {
+        return ResponseCode.error;
     }
-}
+} // POST /user/product/:id
 
-const remove = async (request) => {
+const remove = async (id, deleteID) => {
     try {
-        const data = request.body;
-        if(!data._id && !data.upwd) return ResponseCode.invalid;
-        const doc = await UserModel.findOne({'_id' : data._id, 'upwd' : data.upwd});
-        if(doc === null) throw ResponseCode.noUser;
-        else {
-            const d = await doc.product.id(data.product._id);
-            let result = null;
-            if(d !== null && d._id) {
-                d.remove();
-                const ab = await doc.save(err=> {
-                    if(err) return ResponseCode.error;
-                });
-                if(ab && ab.status === -200) {
-                    return ResponseCode.error;
-                } else return ResponseCode.success;
-            } else {
-                return ResponseCode.noData;
-            }
-        }
+        const user = await UserModel.findById(id);
+        if(!user) return ResponseCode.noUser;
+
+        const product = await user.product.id(deleteID);
+        if(product !== null && product._id) {
+            product.remove();
+            const result =  await user.save(err => {
+                if(err) return false;
+                else return true;
+            });
+            if(!result) return ResponseCode.success
+            else return ResponseCode.error;
+        } else return ResponseCode.noData;
     } catch(error) {
         console.log(error);
         return ResponseCode.error;
     }
-}
+} // DELETE /user/product/:deleteID
 
 module.exports = {
     get : get,

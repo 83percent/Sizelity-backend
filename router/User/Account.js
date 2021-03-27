@@ -1,30 +1,19 @@
 const UserModel = require("../../models/UserModel");
 const ResponseCode = require("../../lib/response-code/response-code");
 const bcrypt = require('bcrypt');
-const { response } = require("express");
 const saltRounds = 10;
 
-const get = async (request) => {
-    try {
-        const data = request.body;
-        let findQuery = null;
-        if(data._id && data.upwd) {
-            findQuery = {"_id":data._id, "upwd":data.upwd};
-        } else if(data.uid && data.upwd) {
-            findQuery = {"uid":data.uid, "upwd":data.upwd};
-        } else {
-            return ResponseCode.invalid;
-        }
-        const result = await UserModel.findOne(findQuery);
 
-        if(result && result._id && result.upwd &&result.name) {
-            return {
-                _id : result._id,
-                name : result.name,
-                upwd : result.upwd
-            }
+// POST Auto Login
+const autoLogin = async (req) => {
+    try {
+        const {_id, password} = req.body;
+        console.log("자동로그인 try");
+        const account = await UserModel.findById(_id);
+        if(password === account.upwd) {
+            return {_id: account._id, name: account.name, upwd: account.upwd}
         } else {
-            return ResponseCode.noData;
+            return ResponseCode.noUser;
         }
     } catch(error) {
         console.log(error);
@@ -94,6 +83,6 @@ const update = async (request) => {
     }
 }
 module.exports = {
-    get : get,
+    autoLogin : autoLogin,
     set : set
 }
