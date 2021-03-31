@@ -47,20 +47,18 @@ const get = async (request) => {
         return ResponseCode.invalid;
     }
 }
-const set =  async (request) => {
-    const data = request.body;
-    if(data) {
-        const event = new ShopEventModel(data);
-        try {
-            const result = await event.save();
-            console.log("Event 추가 결괴 : ", result);
-            return ResponseCode.success;
-        } catch {
-            return ResponseCode.error;
+const set =  async (data) => {
+    try {
+        const isEvent = await ShopEventModel.findOne({sname: data.sname});
+        if(isEvent) return ResponseCode.already;
+        else {
+            const event = new ShopEventModel(data);
+
+            // Mongoose save 하면 return 뭐되는지 보고 해당 return 에 맞게 수정하기
+            event.save();
         }
-    } else {
-        return ResponseCode.invalid;
-    }
+
+    } catch {return ResponseCode.error};
 }
 const remove = () => {
 

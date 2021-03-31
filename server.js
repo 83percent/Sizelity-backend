@@ -22,6 +22,7 @@ const Product = require('./router/Product');
 const Shop = require('./router/Shop');
 const ShopUser = require('./router/Shop_User');
 const ClientUser = require('./router/Client_User');
+const ClientLogin = require('./router/Client_Login');
 const EventRouter = require('./router/Event_Router');
 
 
@@ -34,7 +35,7 @@ server.use(cookieSession({
 
 server.use(cors({
     origin: 'http://localhost:3000',
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH','OPTIONS'],
     credentials: true
 }));
 server.use(express.json());
@@ -62,11 +63,13 @@ server.use('/product', Product);
 server.use('/su', ShopUser);
 server.use('/s', Shop);
 server.use('/user', (req, res, next) => {
+    console.log("로그인 여부 : ", req.isAuthenticated())
     if(req.isAuthenticated()) next();
     else {
         res.status(401).send({message: "Can't access user"});
     }
 },ClientUser);
+server.use('/login', ClientLogin);
 server.use('/event', EventRouter);
 
 

@@ -38,32 +38,23 @@ const set = async (id, data) => {
     }
 }
 
-const remove = async (request) => {
+// REMOVE 수정해야함 
+const remove = async (id, deleteID) => {
     try {
-        const data = request.body;
-        if(!data._id && !data.upwd) return ResponseCode.error;
-        const document = await getAfter(data._id, data.upwd);
-        if(document) {
-            let count = 0;
-            for(const _id of data.product) {
-                const d = await document.after.id(_id)
-                if(d !== null && d._id) {
-                    d.remove();
-                    count++;
-                }
-            }
-            if(count > 0) {
-                document.save(err => {
-                    if(err) return ResponseCode.error;
-                });
-                return ResponseCode.success;
-            } else return ResponseCode.noData;
-        } else {
-            console.log("이용자 데이터 정보 없음")
-            return ResponseCode.noData;
-        }
-    } catch(error) {
-        console.log(error);
+        const user = await UserModel.findById(id);
+        if(!user) return ResponseCode.noUser;
+        
+        const product = await user.after.id(deleteID);
+        if(product !== null && product._id) {
+            product.remove();
+            const result =  await user.save(err => {
+                if(err) return false;
+                else return true;
+            });
+            if(!result) return ResponseCode.success
+            else return ResponseCode.error;
+        } else return ResponseCode.noData;
+    } catch {
         return ResponseCode.error;
     }
 }

@@ -3,8 +3,7 @@ const router = express.Router();
 
 const Event = require('./Event/ShopEvent');
 
-// Event get
-router.post('/get', (request, response) => {
+router.get('/', (request, response) => {
     ( async () => {
         const result = await Event.get(request);
         console.log("요청 결과 : ", result);
@@ -12,15 +11,18 @@ router.post('/get', (request, response) => {
     })();
 });
 // Event set
-router.post('/set', (request, response) => {
-    ( async () => {
-        const result = await Event.set(request);
-        console.log("추가 요청 결과 : ", result);
-        response.send(result);
-    })();
+router.post('/', async (req, res) => {
+    if(req.isAuthenticated() && req.user.praw) {
+        const {sname:authSname} = req.user.praw;
+        // Break Point
+        if(authSname === req.data.sname) {}
+        const result = await Event.set(req.body);
+        res.send(result);
+    } else res.status(401).send({message: "Can't access user"});
 });
 // Event remove
-router.post('/remove', (request, response) => {
+// @params id : 삭제하려는 이벤트의 id
+router.delete('/:id', (request, response) => {
     ( async () => {
         const result = await Event.remove(request);
         console.log("삭제 요청 결과 : ", result);
@@ -28,7 +30,7 @@ router.post('/remove', (request, response) => {
     })();
 });
 // Event update
-router.post('/update', (request, response) => {
+router.put('/update', (request, response) => {
     ( async () => {
         const result = await Event.update(request);
         console.log("수정 요청 결과 : ", result);

@@ -1,31 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const ResponseCode = require('../lib/response-code/response-code');
-const session = require('express-session');
-session({
-    secret: 'rererere',
-    resave: false,
-    saveUninitialized : false,
-    cookie: {
-        secure: false
-    }
-});
-
-const LocalStrategy = require('passport-local').Strategy;
-const passport = require('passport');
-const UserModel = require("../models/UserModel");
-const bcrypt = require('bcrypt');
 
 const UserProduct = require('./User/Product.js');
 const UserAccount = require('./User/Account.js');
 const UserAfter = require('./User/After');
-
-// Account
-// Create User
-router.post('/signup', async (request, response) => {
-    const result = await UserAccount.set(request);
-    response.send(result);
-});
+const responseCode = require('../lib/response-code/response-code.js');
 
 
 /* ================================ 
@@ -45,10 +24,12 @@ router.post('/product', async (req, res) => {
 
 router.delete('/product/:deleteID', async (req, res) => {
     if(!req.params.deleteID) res.status(403).send({message : "Invalid Request"});
-    console.log("삭제하려는 Client id : ", req.user._id);
-    console.log("삭제하려는 상품 id : ", req.params.deleteID);
-    const result = await UserProduct.remove(req.user._id, req.params.deleteID);
-    res.send(result);
+    else {
+        console.log("삭제하려는 Client id : ", req.user._id);
+        console.log("삭제하려는 상품 id : ", req.params.deleteID);
+        const result = await UserProduct.remove(req.user._id, req.params.deleteID);
+        res.send(result);
+    }
 }); // DELETE
 
 router.put('/product', (request, response) => {
@@ -73,13 +54,14 @@ router.post('/after', async (req, res) => {
     res.send(result);
 }); // Set : Create
 
-router.delete('/after', (request, response) => {
-    console.log("삭제할 데이터 : ",request.body);
-    ( async () => {
-        const result = await UserAfter.remove(request);
-        console.log("REMOVE User After Product Data : ", result);
+router.delete('/after:deleteID', async (req, res) => {
+    const removeID = req.params.removeID;
+    if(!removeID) res.status(403).send({message : "Invalid Request"});
+    else {
+        const result = await UserAfter.remove(req.user._id, removeID);
         response.send(result);
-    })();
+    }
+    
 }); // DELETE
 
 
@@ -87,62 +69,29 @@ router.delete('/after', (request, response) => {
 /* ================================ 
             Account
 ================================ */
-router.post('/', passport.authenticate('local'), 
-    function(req, res) {
-        if(req.user) {
-            res.send({
-                _id: req.user.id,
-                uid: req.user.uid,
-                password: req.user.upwd,
-                name: req.user.name
-            });
-        } else {
-            res.send({status:404})
-        }
-    }
-);
-router.get('/logout', (req, res) => {
+router.post('/signup', async (request, response) => {
+    const result = await UserAccount.set(request);
+    response.send(result);
+});
+router.get('/logout', async (req, res) => {
     console.log("로그아웃");
     req.logout();
     res.send({status:200});
+});
+router.patch('/', async (req, res) => {
+    const data = req.body;
+    console.log(data);
+    if(data.type !== undefined) {
+        const result = await UserAccount.updata(req.user, data);
+        res.send(result);
+    } else res.send(responseCode.invalid);
+});
+router.delete('/', async (req, res) => {
+    
+}); // DELETE 삭제
+router.put('/', async (req, res) => {
 
-    //res.redirect('/');
-    /* req.session.save(function(){
-        res.redirect('/');
-    }); */
 });
-passport.use(new LocalStrategy (
-    function(username, password, done) {
-        console.log("로그인 시도");
-        console.log(username);
-        console.log(password);
-        UserModel.findOne({uid: username}, (err, user) => {
-           if(err) return done(err);
-           if(!user) return done(null, false, {message: 'Incorrect id'});
-           try {
-               const match = password.length > 20 
-                    ? password === user.upwd
-                    : bcrypt.compareSync(password, user.upwd);
-               if(match) {
-                   return done(null, user);
-               } else {
-                   return done(null, false, {message: 'Incorrect password'});
-               }
-           } catch(e) {
-               return done(e);
-           }
-       });
-   }
-));
-passport.serializeUser((user, done) => {
-    console.log("serialize");
-    done(null, user.id);
-});
-passport.deserializeUser((id, done) => {
-    UserModel.findById(id, (err, user) => {
-        console.log("deserialize");
-        done(err, user);
-    })
-});
+
 
 module.exports = router;
