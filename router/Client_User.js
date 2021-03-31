@@ -17,7 +17,7 @@ router.get('/product', async (req, res) => {
 }); // Get
 
 router.post('/product', async (req, res) => {
-    const result = await UserProduct.set(req.user._id, req.body);
+    const result = await UserProduct.set(req.user, req.body);
     res.status(200).send(result);
 }); // Set
 
@@ -32,8 +32,9 @@ router.delete('/product/:deleteID', async (req, res) => {
     }
 }); // DELETE
 
-router.put('/product', (request, response) => {
-    
+router.put('/product', async (req, res) => {
+    const result = await UserProduct.update(req.user, req.body);
+    res.status(200).send(result);
 }); // PUT : Update User Product
 
 

@@ -12,10 +12,10 @@ const UserProductModel = new mongoose.Schema({
         subtype : { type: String }
     },
     praw : {
-        domain : { type : String, require: true },
-        type : { type : String, require: true },
-        code : { type : String, require: true },
-        full : { type : String, require: true}
+        domain : { type : String },
+        type : { type : String },
+        code : { type : String },
+        full : { type : String }
     },
     size : {}
 });
