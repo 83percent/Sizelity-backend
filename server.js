@@ -56,12 +56,12 @@ server.options('/*', (req, res) => {
     //res.header("Access-Control-Allow-Header", "X-Requested-With");
     //res.header("Access-Control-Allow-Methods","GET, PUT, POST, DELETE, OPTIONS");
 
-    res.send();
+    res.sendStatus(200);
 });
 
 server.use('/product', Product);
-server.use('/su', ShopUser);
-server.use('/s', Shop);
+//server.use('/su', ShopUser);
+//server.use('/s', Shop);
 server.use('/user', (req, res, next) => {
     console.log("로그인 여부 : ", req.isAuthenticated())
     if(req.isAuthenticated()) next();

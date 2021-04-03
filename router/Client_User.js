@@ -70,10 +70,6 @@ router.delete('/after:deleteID', async (req, res) => {
 /* ================================ 
             Account
 ================================ */
-router.post('/signup', async (request, response) => {
-    const result = await UserAccount.set(request);
-    response.send(result);
-});
 router.get('/logout', async (req, res) => {
     console.log("로그아웃");
     req.logout();

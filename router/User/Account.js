@@ -18,7 +18,7 @@ const saltRounds = 10;
     alert : Boolean
 }
 */
-const set = async (request) => {
+/* const set = async (request) => {
     const data = request.body;
     if(!data.uid || !data.upwd || !data.name || !data.gender) return ResponseCode.invalid;
     const user = await UserModel.findOne({uid: data.uid}, (err, user) => {
@@ -47,7 +47,7 @@ const set = async (request) => {
             }
         } catch {return ResponseCode.error}
     }
-}
+} */
 
 // Remove Account
 
