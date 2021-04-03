@@ -120,6 +120,5 @@ const change = {
 }
 
 module.exports = {
-    updata : update,
-    set : set
+    updata : update
 }

@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const ResponseCode = require("../lib/response-code/response-code");
 
 // Create User
-router.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
     const data = req.body;
     if(!data.uid || !data.upwd || !data.name || !data.gender) res.send(ResponseCode.invalid);
     try {
