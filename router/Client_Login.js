@@ -7,6 +7,8 @@ const UserModel = require("../models/UserModel");
 const bcrypt = require('bcrypt');
 
 const ResponseCode = require("../lib/response-code/response-code");
+const saltRounds = 10;
+
 
 // Create User
 router.post('/signup', async (req, res) => {

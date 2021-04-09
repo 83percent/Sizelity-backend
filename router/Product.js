@@ -51,6 +51,7 @@ router.post('/', async (req, res) => {
             else {
                 // 중복확인
                 const isProduct = await ProductModel.findOne({"praw.domain": domain, "praw.code": code});
+                console.log("Already Product Data : ", isProduct);
                 if(!isProduct) res.send({status: ResponseCode.already});
                 else {
                     const product = new ProductModel(data);
@@ -61,7 +62,7 @@ router.post('/', async (req, res) => {
             }
         } catch {res.send(ResponseCode.error)}
         
-    } else req.status(401).send({message: "Can't access user"});
+    } else res.status(401).send({message: "Can't access user"});
 });
 // @params id : ProductModel._id
 router.delete('/:id', async (req, res) => {

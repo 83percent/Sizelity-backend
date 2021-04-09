@@ -3,52 +3,6 @@ const ResponseCode = require("../../lib/response-code/response-code");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-
-// POST Auto Login
-
-
-// Create Account
-/*
-{
-    uid : String*
-    upwd :  String*
-    name : String*
-    gender : String*
-    privacy : Boolean*
-    alert : Boolean
-}
-*/
-/* const set = async (request) => {
-    const data = request.body;
-    if(!data.uid || !data.upwd || !data.name || !data.gender) return ResponseCode.invalid;
-    const user = await UserModel.findOne({uid: data.uid}, (err, user) => {
-        if(err) return false;
-        return user;
-    });
-    if(user === false) return ResponseCode.error;
-    else if(user !== null) return ResponseCode.already;
-    else {
-        try {
-            const salt = bcrypt.genSaltSync(saltRounds);
-            const hash = bcrypt.hashSync(data.upwd, salt);
-            if(hash) {
-                const account = new UserModel({
-                    uid : data.uid,
-                    upwd : hash,
-                    name : data.name,
-                    gender : data.gender,
-                    privacy : data.privacy,
-                    alert : data.alert
-                }); 
-                const result = await account.save();
-                if(result._id) {
-                    return {status : 200};
-                } else return ResponseCode.error;
-            }
-        } catch {return ResponseCode.error}
-    }
-} */
-
 // Remove Account
 
 

@@ -37,7 +37,11 @@ const ProductSchema = new Mongoose.Schema({
             require : true
         }
     },
-    size : []
+    size : [],
+    reg_date : {
+        type : Date,
+        default : Date.now
+    }
 }, {
     versionKey: false
 });

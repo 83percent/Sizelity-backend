@@ -19,8 +19,6 @@ const server = express();
 
 // Router Component
 const Product = require('./router/Product');
-const Shop = require('./router/Shop');
-const ShopUser = require('./router/Shop_User');
 const ClientUser = require('./router/Client_User');
 const ClientLogin = require('./router/Client_Login');
 const EventRouter = require('./router/Event_Router');
@@ -34,7 +32,8 @@ server.use(cookieSession({
 }));
 
 server.use(cors({
-    origin: 'https://sizelity.com',
+    //origin: 'https://www.sizelity.com',
+    origin: '*',
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH','OPTIONS'],
     credentials: true
 }));
@@ -52,13 +51,22 @@ server.use(session({
 server.use(passport.initialize());
 server.use(passport.session());
 server.options('/*', (req, res) => {
-    //res.header("Access-Control-Allow-Origin", "*");
-    //res.header("Access-Control-Allow-Header", "X-Requested-With");
-    //res.header("Access-Control-Allow-Methods","GET, PUT, POST, DELETE, OPTIONS");
+    //res.header("Access-Control-Allow-Origin", "https://www.sizelity.com");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Header", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods","GET, PUT, POST, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Credentials", 'true');
 
     res.sendStatus(200);
 });
 
+// server.use('path', corsCheckFunc(), (res,req,next) => {}); 이렇게 사용하는게 더 좋아보임
+
+server.get('/healthCheck', (req, res) => {
+    res.writeHead(200, {"Content-Type": "text/html"});
+    res.write("Health Check Page");
+    res.end();
+})
 server.use('/product', Product);
 //server.use('/su', ShopUser);
 //server.use('/s', Shop);
@@ -71,7 +79,6 @@ server.use('/user', (req, res, next) => {
 },ClientUser);
 server.use('/login', ClientLogin);
 server.use('/event', EventRouter);
-
 
 
 server.listen(PORT, () => {
