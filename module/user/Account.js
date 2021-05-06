@@ -1,18 +1,9 @@
 const UserModel = require("../../models/UserModel");
+const OutOfServiceModel = require("../../models/OutOfServiceModel");
 const ResponseCode = require("../../lib/response-code/response-code");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-// Remove Account
-
-
-// Updata Account
-/*
-    {
-        _id
-        upwd 
-    }
-*/
 const update = async (user, data) => {
     const {type} = data;
     let userData = null;
@@ -66,13 +57,45 @@ const update = async (user, data) => {
         }
     }
 }
-const change = {
-    password : async (id, change) => {
 
+/*
+    계정삭제
+    @param id :String
+    @param password :String
+    @param option :String
+    @param suggest :String
 
-    }
+    @return -2  Error
+    @return -1  invalid
+    @return 0   no user
+    @return 1   OK
+*/
+const optionList = ["lessInfo", "howCan", "otherService", "uncomfortable", "other"];
+async function remove(id, password, option, suggest) {
+    if(password.length < 8 || !optionList.includes(option)) return -1;
+
+    const user = await UserModel.findByIdAndDelete(id);
+    if(!user) return 0;
+
+    try {
+        // 비밀번호 일치 확인
+        const isSame = bcrypt.compareSync(password, user.upwd);
+        if(!isSame) return 0;
+    } catch {return -2;}
+    console.log("가입 날짜 : ", user.reg_date);
+    const data = new OutOfServiceModel({
+        reason : option,
+        gender : user.gender,
+        reg_date : user.reg_date,
+    });
+    if(!suggest) data.suggest = suggest;
+
+    await data.save();
+    return 1;
+    
 }
 
 module.exports = {
-    updata : update
+    update,
+    remove
 }
