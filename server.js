@@ -18,7 +18,7 @@ const PORT = 3001;
 const server = express();
 
 // Router Component
-const Product = require('./router/Product');
+const ProductRouter = require('./router/ProductRouter');
 const ClientUser = require('./router/Client_User');
 const ClientLogin = require('./router/Client_Login');
 const EventRouter = require('./router/Event_Router');
@@ -67,14 +67,14 @@ server.get('/healthCheck', (req, res) => {
     res.write("Health Check Page");
     res.end();
 })
-server.use('/product', Product);
+server.use('/product', ProductRouter);
 //server.use('/su', ShopUser);
 //server.use('/s', Shop);
 server.use('/user', (req, res, next) => {
     console.log("로그인 여부 : ", req.isAuthenticated())
     if(req.isAuthenticated()) next();
     else {
-        res.status(401).send({message: "Can't access user"});
+        res.sendStatus(401);
     }
 },ClientUser);
 server.use('/login', ClientLogin);

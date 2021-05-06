@@ -33,7 +33,6 @@ router.get('/:shop_domain', async (req, res) => {
                 if(product === null) res.send(ResponseCode.error);
                 else res.send(product);
             } catch {res.send(ResponseCode.error)}
-
         }
     } else res.status(401).send({message: "Can't access user"});
 });

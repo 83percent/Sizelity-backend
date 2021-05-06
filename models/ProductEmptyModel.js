@@ -1,5 +1,5 @@
 const Mongoose = require('mongoose');
-const COLL_NAME = 'Product_Empty';
+const COLL_NAME = 'Product_Empties';
 const ProductEmptySchema = new Mongoose.Schema({
     domain : {
         type: String,
@@ -13,9 +13,10 @@ const ProductEmptySchema = new Mongoose.Schema({
         type: String,
         require: true
     },
-    reg_date : {
+    req_date : {
         type: Date,
-        defualt: Date.now
+        defualt: Date.now,
+        require: true
     }
 });
 
