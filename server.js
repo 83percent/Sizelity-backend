@@ -19,8 +19,8 @@ const server = express();
 
 // Router Component
 const ProductRouter = require('./router/ProductRouter');
-const ClientUser = require('./router/Client_User');
-const ClientLogin = require('./router/Client_Login');
+const UserRouter = require('./router/UserRouter');
+const AccountRouter = require('./router/AccountRouter');
 const EventRouter = require('./router/Event_Router');
 
 
@@ -33,7 +33,7 @@ server.use(cookieSession({
 
 server.use(cors({
     //origin: 'https://www.sizelity.com',
-    origin: '*',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH','OPTIONS'],
     credentials: true
 }));
@@ -68,16 +68,14 @@ server.get('/healthCheck', (req, res) => {
     res.end();
 })
 server.use('/product', ProductRouter);
-//server.use('/su', ShopUser);
-//server.use('/s', Shop);
 server.use('/user', (req, res, next) => {
     console.log("로그인 여부 : ", req.isAuthenticated())
     if(req.isAuthenticated()) next();
     else {
         res.sendStatus(401);
     }
-},ClientUser);
-server.use('/login', ClientLogin);
+},UserRouter);
+server.use('/account', AccountRouter);
 server.use('/event', EventRouter);
 
 

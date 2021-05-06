@@ -18,6 +18,8 @@ const ProductEmptySchema = new Mongoose.Schema({
         defualt: Date.now,
         require: true
     }
+}, {
+    versionKey: false
 });
 
 /* NoDataSchema.index({

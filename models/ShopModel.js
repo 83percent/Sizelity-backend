@@ -21,6 +21,8 @@ const ShopSchema = new Mongoose.Schema({
             require: true
         }
     },
+}, {
+    versionKey: false
 });
 
 module.exports = Mongoose.model(COLL_NAME, ShopSchema);
