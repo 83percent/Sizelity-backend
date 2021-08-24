@@ -1,6 +1,12 @@
 const Mongoose = require('mongoose');
 const COLL_NAME = 'product';
-const ProductSchema = new Mongoose.Schema({
+const ProductSchema = new Mongoose.Schema({},{collection: 'products'});
+/* const ProductSchema = new Mongoose.Schema({
+    shopRef : {
+        type: Mongoose.Schema.Types.ObjectId,
+        ref : "shop",
+        required : true
+    },
     praw : {
         domain : {
             type: String,
@@ -44,7 +50,7 @@ const ProductSchema = new Mongoose.Schema({
     }
 }, {
     versionKey: false
-});
+}); */
 
 /* ProductSchema.index({
     sname : 1,

@@ -1,72 +1,43 @@
+/*
+    2021-08-04 
+    작성자 : 이재훈
+*/
+
 const express = require('express');
 const router = express.Router();
-const status_code = require('../lib/response-code/status-code');
-const Product = require('../module/product/Product.js');
+const StatusCode = require('../lib/response-code/status-code');
+const ProductModule = require('../module/product/Product.js');
 
 /*
-    - shop, code 로 상품을 검색
-
-    body : {
-        full : 요청한 상품 정보를 저장하기 위해 필요
-    }
-
-    HTTP STATUS CODE
-    200 : success
-    401 : invalid
-    404 : no data
-    500 : error
+    2021-08-04 (이재훈)
+    POST : /product/search
+    domain + code 로 검색 (full 은 저장을 위해)
 */
-router.post('/:shop_domain/:code', async (req, res) => {
-    const shop = req.params.shop_domain;
-    const code = req.params.code;
-    const full = req.body?.full;
-    if(!shop || !code) res.sendStatus(status_code.invalid);
+router.post('/search', async (req, res) => {
+    const { domain, code, full } = req.body;
+    console.log(req.body)
+    if(!domain || !code) res.sendStatus(StatusCode.invalid);
     else {
-        const result = await Product.getProduct(shop,code);
-        if(result?._id) res.status(status_code.success).send(result);
-        else {
-            switch(result) {
-                case null : {
-                    if(full) await Product.setEmptyProduct(shop, code, full);
-                    res.sendStatus(status_code.noData);
-                    break;
-                }
-                case 'error' :
-                default : {
-                    res.sendStatus(status_code.error);
-                }
-            }
-        }
+        const result = await ProductModule.get({domain, code, full});
+        if(typeof result !== 'number') res.send(result);
+        else res.sendStatus(result);
     }
 });
+
 /*
-    - id로 상품을 검색
-    HTTP STATUS CODE
-    200 : success
-    401 : invalid
-    404 : no data
-    500 : error
+    2021-08-04 (이재훈)
+    GET : /product
+    _id를 이용하여 상품 불러오기
 */
 router.get('/:id', async (req, res) => {
-    const id = req.params.id;
-    console.log(id);
-    if(id.length < 16) return res.sendStatus(status_code.invalid);
+    const { id } = req.params;
+    if(id?.length > 10) res.sendStatus(StatusCode.invalid);
     else {
-        const result = await Product.getProductFindById(id);
-        if(result?._id) res.status(status_code.success).send(result);
-        else {
-            switch(result) {
-                case null : {
-                    res.sendStatus(status_code.noData);
-                    break;
-                }
-                case 'error' :
-                default : {
-                    res.sendStatus(status_code.error);
-                }
-            }
-        }
+        const result = ProductModule.get({id});
+        if(typeof result !== 'number') res.send(result);
+        else res.sendStatus(result);
     }
+    
 });
 
 module.exports = router;

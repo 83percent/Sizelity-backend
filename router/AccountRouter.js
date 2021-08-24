@@ -3,41 +3,56 @@ const router = express.Router();
 
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
-const UserModel = require("../models/UserModel");
 const bcrypt = require('bcrypt');
 
+// Model
+const UserModel = require("../models/UserModel");
+const UserAfterProductModel = require("../models/UserAfterProductModel");
+
 const StatusCode = require("../lib/response-code/status-code");
-const ResponseCode = require("../lib/response-code/response-code");
 const saltRounds = 10;
 
 
 // Create User
 router.post('/signup', async (req, res) => {
-    const data = req.body;
-    if(!data.uid || !data.upwd || !data.name || !data.gender) res.send(ResponseCode.invalid);
+    const {uid, upwd, name, gender, terms, alert} = req.body;
+    if(!uid || !upwd || !name || !gender) res.sendStatus(StatusCode.invalid); //400
     try {
-        const user = await UserModel.findOne({uid: data.uid});
-        if(user?._id) res.send(ResponseCode.already);
+        const user = await UserModel.findOne({uid: uid});
+        if(user?._id) res.sendStatus(StatusCode.already); // 419
         else {
             const salt = bcrypt.genSaltSync(saltRounds);
-            const hash = bcrypt.hashSync(data.upwd, salt);
+            const hash = bcrypt.hashSync(upwd, salt);
             if(hash) {
                 const account = new UserModel({
-                    uid : data.uid,
+                    uid,
                     upwd : hash,
-                    name : data.name,
-                    gender : data.gender,
-                    privacy : data.privacy,
-                    alert : data.alert
+                    name,
+                    gender,
+                    terms,
+                    alert
                 }); 
                 const result = await account.save();
-                if(result._id) res.send(ResponseCode.success);
-                else res.send(ResponseCode.error);
+                if(result._id) {
+                    try {
+                        // 에프터 모델에 정보 추가
+                        let _userAftere = new UserAfterProductModel({
+                            _id : result._id
+                        });
+                        _userAftere = _userAftere.save();
+                        console.log(_userAftere);
+                    } catch (err){console.log(err);}
+                    res.sendStatus(StatusCode.success); // 200
+                }
+                else res.sendStatus(StatusCode.error); // 500
             } else {
-                res.send(ResponseCode.error);
+                res.sendStatus(StatusCode.error); // 500
             }
         }
-    } catch{res.send(ResponseCode.error)}
+    } catch(err) {
+        console.log(err);
+        res.sendStatus(StatusCode.error); // 500
+    }
 })
 
 // Login User
@@ -51,7 +66,7 @@ router.post('/signin', passport.authenticate('local'),
                 name: req.user.name
             });
         } else {
-            res.sendStatus(StatusCode.noData);
+            res.sendStatus(StatusCode.noData); // 204
         }
     }
 );
@@ -59,7 +74,6 @@ router.post('/signin', passport.authenticate('local'),
 
 passport.use(new LocalStrategy (
     function(username, password, done) {
-        console.table([username, password]);
         UserModel.findOne({uid: username}, (err, user) => {
            if(err) return done(err);
            if(!user) return done(null, false, {message: 'Incorrect id'});
@@ -74,7 +88,7 @@ passport.use(new LocalStrategy (
                }
            } catch(e) {
                return done(e);
-           }
+           }    
        });
    }
 ));

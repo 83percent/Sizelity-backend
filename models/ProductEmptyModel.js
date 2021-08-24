@@ -3,29 +3,28 @@ const COLL_NAME = 'Product_Empties';
 const ProductEmptySchema = new Mongoose.Schema({
     domain : {
         type: String,
-        require: true
+        required: true
     },
     code : {
         type: String,
-        require: true
+        required: true
     },
     full : {
         type: String,
-        require: true
+        required: true
     },
-    req_date : {
+    reg_date : {
         type: Date,
-        defualt: Date.now,
-        require: true
+        defualt: Date.now
     }
 }, {
     versionKey: false
 });
 
-/* NoDataSchema.index({
-    sname : 1,
+ProductEmptySchema.index({
+    domain : 1,
     code : 1
 }, {
     unique : true
-}); */
+});
 module.exports = Mongoose.model(COLL_NAME, ProductEmptySchema);

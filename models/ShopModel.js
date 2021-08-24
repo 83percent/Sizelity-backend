@@ -1,28 +1,5 @@
 const Mongoose = require('mongoose');
 const COLL_NAME = 'shop';
-const ShopSchema = new Mongoose.Schema({
-    info : {
-        name : {
-            type: String,
-            require: true
-        }
-    },
-    url : {
-        home : {
-            type: String,
-            require: true
-        },
-        type : {
-            type: String,
-            require: true
-        },
-        domain : {
-            type: String,
-            require: true
-        }
-    },
-}, {
-    versionKey: false
-});
+const ShopSchema = new Mongoose.Schema({},{ collection : 'shops'});
 
 module.exports = Mongoose.model(COLL_NAME, ShopSchema);

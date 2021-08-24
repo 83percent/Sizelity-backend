@@ -6,8 +6,14 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 
-const __Mongoose = require('./lib/db/Mongo');
+const __Mongoose = require('./config/Mongo');
 
+// Router Component
+const ProductRouter = require('./router/ProductRouter');
+const UserRouter = require('./router/UserRouter');
+const AccountRouter = require('./router/AccountRouter');
+const EventRouter = require('./router/EventRouter');
+const AfterRouter = require('./router/AfterRouter');
 
 // Field
 const PORT = 3001;
@@ -17,23 +23,17 @@ const PORT = 3001;
 ================================ */
 const server = express();
 
-// Router Component
-const ProductRouter = require('./router/ProductRouter');
-const UserRouter = require('./router/UserRouter');
-const AccountRouter = require('./router/AccountRouter');
-const EventRouter = require('./router/Event_Router');
-
-
 server.use(express.static('public'));
 server.use(cookieParser({secret: 'rererere'}));
 server.use(cookieSession({
     name: 'session',
     keys: ['rererere']
-}));
+}));    
 
 server.use(cors({
     //origin: 'https://www.sizelity.com',
     origin: 'http://localhost:3000',
+    //origin : '*',
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH','OPTIONS'],
     credentials: true
 }));
@@ -67,16 +67,23 @@ server.get('/healthCheck', (req, res) => {
     res.write("Health Check Page");
     res.end();
 })
-server.use('/product', ProductRouter);
-server.use('/user', (req, res, next) => {
-    console.log("로그인 여부 : ", req.isAuthenticated())
+
+server.use('/after', (req, res, next) => {
     if(req.isAuthenticated()) next();
-    else {
-        res.sendStatus(401);
-    }
-},UserRouter);
-server.use('/account', AccountRouter);
-server.use('/event', EventRouter);
+    else res.sendStatus(401);
+}, AfterRouter); // /after
+
+server.use('/product', ProductRouter); // /product
+
+server.use('/user', (req, res, next) => {
+    if(req.isAuthenticated()) next();
+    else {res.sendStatus(401);}
+},UserRouter); // /user
+
+
+server.use('/account', AccountRouter); // /acount
+
+server.use('/event', EventRouter); // /event
 
 
 server.listen(PORT, () => {
