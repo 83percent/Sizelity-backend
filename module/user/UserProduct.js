@@ -4,7 +4,8 @@ const StatusCode = require("../../lib/response-code/status-code");
 
 /*
     사용자 옷장 데이터 불러오기.
-    마지막 수정 : 2021-08-08 (이재훈)
+    마지막 수정 : 2021-08-29 (이재훈)
+    사용안함.
 */
 const get = async (id) => {
     try {
@@ -17,23 +18,31 @@ const get = async (id) => {
     }
 } // GET : /user/product/:id
 
-const set = async (user, data) => {
+/*
+    사용자 옷장 데이터 저장.
+    마지막 수정 : 2021-08-29 (이재훈)
+*/
+const MAXIMUM_PRODUCT_COUNT = 100;
+async function set(user, data) {
     try {
+        // 최대 갯수
+        if(user.product.length > MAXIMUM_PRODUCT_COUNT) {
+            return StatusCode.noCraete; // 202
+        }
         // 중복확인
         if(data?.praw?.domain) {
             const is = user.product.filter((element) => {
                 return (element.praw.domain === data.praw.domain && element.praw.code === data.praw.code); 
             });
             //console.log("중복 ? : ", is);
-            if(is.length !== 0) return ResponseCode.already;
+            if(is.length !== 0) return StatusCode.already; // 419
         }
-        user.product.push(data);
-        const result = await user.save();
-        //console.log("추가 결과 : ", result);
-        if(result._id) return ResponseCode.success;
-        else return ResponseCode.error;
+
+        user.product.unshift(data);
+        await user.save();
+        return StatusCode.success; // 200
     } catch {
-        return ResponseCode.error;
+        return StatusCode.error; // 500
     }
 } // POST /user/product/:id
 

@@ -10,9 +10,6 @@ router.get('/', async (req, res) => {
         }
         case 'number' : {
             switch(result) {
-                case 401 : {
-                    res.status(result).send({error : "로그인 후 이용가능 합니다."});
-                }
                 case 500 : 
                 default : {
                     res.status(result).send({error : "문제가 발생했습니다."});
@@ -38,23 +35,11 @@ router.post("/", async (req, res) => {
             res.sendStatus(result);
             break;
         }
-        case 202 : {
-            res.status(result).send({error : "나중에 볼 상품이 너무 많아요.(최대 100개)"});
-            break;
-        }
-        case 401 : {
-            res.status(result).send({error : "로그인 후 이용가능 합니다."});
-            break;
-        }
-        case 419 : {
-            res.status(result).send({error : "이미 저정된 상품입니다."});
-            break;
-        }
-        case 500 : {
+        case 500 :
+        default : {
             res.status(result).send({error : "문제가 발생했습니다."});
         }
     }
-    
 });
 
 router.delete("/", async (req, res) => {

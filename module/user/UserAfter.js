@@ -8,13 +8,20 @@ const Mongoose = require("mongoose");
 */
 async function get(id) {
     try {
-        const after = await UserAfterProductModel
+        let after = await UserAfterProductModel
             .findById(id, ["list"])
             .populate({
                 path : 'list',
                 model : 'product'
             });
-        if(!after) return StatusCode.auth; // 401
+        if(!after) {
+            after = new UserAfterProductModel({
+                _id : id,
+                list: []
+            });
+            await after.save();
+            return [];
+        }
         return after.list;
     } catch(error) {
         console.log(error);
@@ -25,11 +32,51 @@ async function get(id) {
 
 /*
     나중에 볼 상품 추가
-    2021-08-10 (이재훈)
+    2021-08-28 (이재훈)
 */
 const maximum = 50;
 async function set(id, productID) {
     try {
+        let afters = await UserAfterProductModel.findById(id);
+        if(afters === null) {
+            // 새로 생성
+            afters = new UserAfterProductModel({
+                _id : Mongoose.Types.ObjectId(id),
+                list : [
+                    Mongoose.Types.ObjectId(productID)
+                ]
+            });
+            await afters.save();
+            return StatusCode.success;
+        } else {
+            const existIndex = afters.list.indexOf(productID);
+            if(existIndex >= 0) {
+                // 중복
+                if(existIndex === 0) {
+                    return StatusCode.success;
+                }
+                if(existIndex > 0) {
+                    let tmp = afters.list[existIndex];
+                    afters.list.splice(existIndex, 1);
+                    afters.list.unshift(tmp);
+                }
+            } else {
+                // 중복 없음
+                if(afters.length > maximum) {
+                    afters.list.pop();
+                }
+                afters.list.unshift(Mongoose.Types.ObjectId(productID));
+            }
+            await afters.save();
+            return StatusCode.success;
+        }
+    } catch(err) {
+        console.log(err)
+        return StatusCode.error;
+    }
+
+
+    /* try {
         let UserProduct = await UserAfterProductModel.findById(id, ["list"]);
         if(!UserProduct) return StatusCode.auth; // 401
         else if(UserProduct?.list?.length >= maximum) return StatusCode.noCraete; // 202
@@ -56,7 +103,7 @@ async function set(id, productID) {
     } catch(err) {
         console.log(err);
         return StatusCode.error; // 500
-    }
+    } */
 } // set
 
 

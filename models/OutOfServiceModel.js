@@ -5,9 +5,6 @@ const OutOfServiceSchema = new Mongoose.Schema({
         type: String,
         require: true
     },
-    suggest : {
-        type: String,
-    },
     gender : {
         type: String,
         require: true

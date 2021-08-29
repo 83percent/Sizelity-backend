@@ -16,8 +16,8 @@ const StatusCode = require('../../lib/response-code/status-code')
 
 
 /*
-    마지막 수정 날짜 : 2021-08-04 (이재훈)
-    상품 검색
+    마지막 수정 날짜 : 2021-08-29 (이재훈)
+    반환 값 리턴
 */
 async function get({id, domain, code, full}) {
     if(id) return await ProductModel.findById(id);

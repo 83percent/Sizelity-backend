@@ -27,25 +27,22 @@ const UserModel = new mongoose.Schema({
     uid : {
         type : String,
         required : true,
-        unqiue: true
     },
-    upwd : {
-        type : String,
-        required : true,
-        trim : true
+    provider : {
+        type: String,
+        required : true
     },
     gender : {
         type: String,
-        required: true
     },
     terms : {
         service : {
             type : Boolean,
-            required : true
+            default : false
         },
         privacy : {
             type : Boolean,
-            required : true
+            default : false
         }
     },
     product : [UserProductModel],
@@ -57,10 +54,12 @@ const UserModel = new mongoose.Schema({
     versionKey: false
 });
 
+UserModel.index({uid: 1, provider: 1});
 /*
     유저가 삭제 되기 전 일어나야할 일 정의
     - user_after_product 모델에서 해당 ID 삭제.
 */
+
 UserModel.pre('findByIdAndDelete', function(next) {
     console.log("pre 미들웨어 this 값 : ");
     console.log(this);
