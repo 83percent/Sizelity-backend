@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-sizelitybackend-dev-211017-authRole",
+      "UnauthRoleArn": "arn:aws:iam::129646048951:role/amplify-sizelitybackend-dev-211017-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::129646048951:role/amplify-sizelitybackend-dev-211017-authRole",
+      "Region": "ap-northeast-2",
+      "DeploymentBucketName": "amplify-sizelitybackend-dev-211017-deployment",
+      "UnauthRoleName": "amplify-sizelitybackend-dev-211017-unauthRole",
+      "StackName": "amplify-sizelitybackend-dev-211017",
+      "StackId": "arn:aws:cloudformation:ap-northeast-2:129646048951:stack/amplify-sizelitybackend-dev-211017/e66bcd50-161d-11ec-bd66-0282c9fff94c",
+      "AmplifyAppId": "d1qjsh2gkhkmbr"
+    }
+  }
+}

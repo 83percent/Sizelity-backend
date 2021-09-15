@@ -7,8 +7,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "aws-serverless-express": "^3.4.0",
-    "bcrypt": "^5.0.1",
+    "@vendia/serverless-express": "^4.3.11",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "cookie-session": "^1.4.0",
@@ -32,7 +31,7 @@
   },
   "scripts": {
     "test": "serverless offline",
-    "start": "node server.js"
+    "start": "node server.local.js"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
-'use strict'
-const awsServerlessExpress = require('aws-serverless-express')
-const app = require('./server')
-const server = awsServerlessExpress.createServer(app);
+// lambda.js
+require('source-map-support/register')
+const serverlessExpress = require('@vendia/serverless-express')
+const app = require('./app')
 
-exports.handler = (event, context) => { awsServerlessExpress.proxy(server, event, context) }
+exports.handler = serverlessExpress({ app })

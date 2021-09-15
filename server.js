@@ -19,8 +19,6 @@ const AfterRouter = require('./router/AfterRouter');
 const AuthRouter = require('./router/AuthRouter');
 const NoticeRouter = require('./router/NoticeRouter');
 
-// Field
-const PORT = 3001;
 
 /* ================================
             Server start
@@ -82,8 +80,4 @@ server.use('/ad', passport.authenticate('jwt', {session: false}), (req, res, nex
     else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
 }, ADRouter);
 
-
-// SERVER START
-server.listen(PORT, () => {
-    console.log(" Server Start : ",PORT);
-});
+module.exports = server;
