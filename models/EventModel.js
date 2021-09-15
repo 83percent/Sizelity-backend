@@ -1,9 +1,20 @@
 /*
-    마지막 수정 : 2021-08-23 이재훈
+    마지막 수정 : 2021-09-13 이재훈
+
+    외부 Collection의 관계 ref 를 연결하기 위해서 수정
 */
 const Mongoose = require('mongoose');
 const COLL_NAME = 'event';
-const EventModel = new Mongoose.Schema({
+const EventModel = new Mongoose.Schema({shopRef : {
+    type : Mongoose.Schema.Types.ObjectId,
+    ref : "shop",
+    required : true
+}}, {collection : 'events'});
+
+module.exports = Mongoose.model(COLL_NAME, EventModel);
+
+/*
+{
     shopRef : {
         type : Mongoose.Schema.Types.ObjectId,
         ref : "shop",
@@ -32,23 +43,5 @@ const EventModel = new Mongoose.Schema({
         type: String,
         required: true
     }
-}, {
-    versionKey: false
-});
-
-module.exports = Mongoose.model(COLL_NAME, EventModel);
-
-/*
-{
-    _id : ObjectId,
-    sname : String,
-    image : String, -- image path.
-    link : String,
-    tag : [String], 
-    expires : {
-        start : Date,
-        end : Date
-    },
-    reg_date : Date
 }
 */

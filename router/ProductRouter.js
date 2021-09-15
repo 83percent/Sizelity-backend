@@ -15,27 +15,38 @@ const ProductModule = require('../module/product/Product.js');
 */
 router.post('/search', async (req, res) => {
     const { domain, code, full } = req.body;
-    console.log(req.body)
-    if(!domain || !code) res.sendStatus(StatusCode.invalid);
+    if(!domain || !code) return res.status(StatusCode.invalid).send({error : '잘못된 접근입니다.'}) // 400
     else {
         const result = await ProductModule.get({domain, code, full});
         if(typeof result !== 'number') res.send(result);
-        else res.sendStatus(result);
+        else {
+            switch(result) {
+                case 204 : return res.sendStatus(result);
+                case 500 :
+                default : return res.status(500).send({error : '서버에 문제가 발생했어요'});
+            }
+        }
     }
 });
 
 /*
     2021-08-04 (이재훈)
-    GET : /product
+    GET : /product/:id
     _id를 이용하여 상품 불러오기
 */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
-    if(id?.length > 10) res.sendStatus(StatusCode.invalid);
+    if(id?.length < 10) return res.status(StatusCode.invalid).send({error : "잘못된 접근입니다."}) // 400
     else {
         const result = ProductModule.get({id});
         if(typeof result !== 'number') res.send(result);
-        else res.sendStatus(result);
+        else {
+            switch(result) {
+                case 204 : return res.sendStatus(result);
+                case 500 :
+                default : return res.status(500).send({error : "서버에 문제가 발생했어요"});
+            }
+        }
     }
     
 });

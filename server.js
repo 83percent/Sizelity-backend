@@ -14,9 +14,10 @@ const __Mongoose = require('./config/Mongo');
 // Router Component
 const ProductRouter = require('./router/ProductRouter');
 const UserRouter = require('./router/UserRouter');
-const EventRouter = require('./router/EventRouter');
+const ADRouter = require('./router/ADRouter');
 const AfterRouter = require('./router/AfterRouter');
 const AuthRouter = require('./router/AuthRouter');
+const NoticeRouter = require('./router/NoticeRouter');
 
 // Field
 const PORT = 3001;
@@ -63,19 +64,26 @@ server.get('/healthCheck', (req, res) => {
 server.use('/auth', AuthRouter);
 server.use('/after', passport.authenticate('jwt', {session: false}), (req, res, next) => {
     if(req.isAuthenticated()) next();
-    else res.sendStatus(401);
+    else res.status(401).send({error : "로그인 후 이용가능 합니다"});
 }, AfterRouter); // /after
-
 server.use('/product', ProductRouter); // /product
 
 server.use('/user', passport.authenticate('jwt', {session: false}), (req, res, next) => {
     if(req.isAuthenticated()) next();
-    else {res.sendStatus(401);}
+    else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
 },UserRouter); // /user
 
-server.use('/event', EventRouter); // /event
+server.use('/notice', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+    if(req.isAuthenticated()) next();
+    else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
+}, NoticeRouter);
+server.use('/ad', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+    if(req.isAuthenticated()) next();
+    else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
+}, ADRouter);
 
 
+// SERVER START
 server.listen(PORT, () => {
     console.log(" Server Start : ",PORT);
 });

@@ -1,5 +1,4 @@
 const UserModel = require("../../models/UserModel");
-const ResponseCode = require("../../lib/response-code/response-code");
 const StatusCode = require("../../lib/response-code/status-code");
 
 /*
@@ -48,17 +47,14 @@ async function set(user, data) {
 
 const update = async (user, data) => {
     try {
-        console.log("Client data : ", user);
-        if(user) return ResponseCode.noData;
-
         const product = await user.product.id(data._id);
-        //console.log("변경하려는 상품 : ", product );
         product.info = data.info;
         product.size = data.size;
+        
         const result = await user.save();
-        if(result._id) return ResponseCode.success;
-        else return ResponseCode.error;
-    } catch(err) {console.log(err);return ResponseCode.error}
+        if(result._id) return StatusCode.success;
+        else return StatusCode.error;
+    } catch(err) {console.log(err);return StatusCode.error}
 }
 
 /*

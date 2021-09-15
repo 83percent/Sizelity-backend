@@ -3,7 +3,6 @@ const router = express.Router();
 
 const UserProduct = require('../module/user/UserProduct.js');
 const UserAccount = require('../module/user/UserAccount.js');
-const UserAfter = require('../module/user/UserAfter');
 
 const StatusCode = require('../lib/response-code/status-code.js');
 
@@ -43,13 +42,14 @@ router.delete('/product/:id/:productID', async (req, res) => {
     res.sendStatus(result);
 }); // DELETE
 
-router.put('/product', async (req, res) => {
+router.patch('/product', async (req, res) => {
     const result = await UserProduct.update(req.user, req.body);
-    res.status(200).send(result);
-}); // PUT : Update User Product
-
-
-
+    switch(result) {
+        case 200 : return res.sendStatus(result);
+        case 500 :
+        default : return res.status(500).send({error : '서버에 문제가 발생했어요'});
+    }
+}); // PATCH : Update User Product
 
 /* ================================ 
             Account

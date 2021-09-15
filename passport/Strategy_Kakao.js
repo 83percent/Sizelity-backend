@@ -18,11 +18,11 @@ const passport = require("passport");
 const KakaoStrategy = require('passport-kakao').Strategy;
 const { create } = require('./Create_User');
 
-
 passport.use(
     new KakaoStrategy(
+        
         {
-            clientID : process.env.KAKAO_CLIENT_ID,
+            clientID : process.env.KAKAO_CLIENT_SERVICE_ID,
             clientSecret : "",
             callbackURL : '/auth/kakao/callback',
         },

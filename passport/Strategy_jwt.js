@@ -38,7 +38,7 @@ passport.use(new JwtStrategy(options, async (payload, done) => {
 
 router.post('/', passport.authenticate('jwt', {session: false}),
     async (req, res) => {
-        res.send({_id : req.user.id, name : req.user.name});
+        res.send({_id : req.user.id, name : req.user.name, gender : req.user.gender});
     }
 )
 
