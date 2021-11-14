@@ -32,6 +32,7 @@ passport.use(
                 nickname,
                 gender
             } = profile._json;
+            console.log(profile);
             create({
                 uid : id,
                 name : nickname,
@@ -52,13 +53,13 @@ passport.use(
 router.get('/', passport.authenticate('naver'));
 router.get('/callback', passport.authenticate('naver', {
     session: false,
-    failureRedirect: 'http://localhost:3000/login',
+    failureRedirect: process.env.REDIRECT_FAIL,
 }), async (req, res) => {
     const token = await createJWT({id: req.user.id, provider: 'naver'});
     if(token) {
         res.cookie('sizelity_token',token);
     }
-    res.redirect('http://localhost:3000');
+    res.redirect(process.env.REDIRECT);
     req.logout();
 })
 

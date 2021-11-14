@@ -14,7 +14,7 @@ const EVENT_TYPE = ['all', 'discount', 'free', 'coupon', 'saving', 'etc'];
 
 router.get('/promotion/:type', async (req, res) => {
     const type = req.params.type;
-    const target = req.user.gender;
+    const target = JSON.parse(req.cookies['sizelity_user'])?.gender
     if(!EVENT_TYPE.includes(type)) return res.status(400).send({error : '잘못된 요청입니다.'});
     const result = await ADEvent.getList({type, target});
     
@@ -24,7 +24,8 @@ router.get('/promotion/:type', async (req, res) => {
 
 router.get('/list/:type/:count', async (req, res) => {
     const {type, count} = req.params;
-    const target = req.user.gender;
+    //console.log(req.cookies['sizelity_user']);
+    const target = JSON.parse(req.cookies['sizelity_user'])?.gender
 
     if(!EVENT_TYPE.includes(type)) return res.status(400).send({error : '잘못된 요청입니다.'});
 

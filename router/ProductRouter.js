@@ -15,6 +15,9 @@ const ProductModule = require('../module/product/Product.js');
 */
 router.post('/search', async (req, res) => {
     const { domain, code, full } = req.body;
+
+    //console.log(`상품 정보 요청 "domain : ${domain}, code : ${code}, full : ${full}`);
+
     if(!domain || !code) return res.status(StatusCode.invalid).send({error : '잘못된 접근입니다.'}) // 400
     else {
         const result = await ProductModule.get({domain, code, full});

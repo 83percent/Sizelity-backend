@@ -18,39 +18,27 @@ const ADRouter = require('./router/ADRouter');
 const AfterRouter = require('./router/AfterRouter');
 const AuthRouter = require('./router/AuthRouter');
 const NoticeRouter = require('./router/NoticeRouter');
+const ReservationRouter = require('./router/ReservationRouter');
+const ImprovementRouter = require('./router/ImprovementRouter');
+const CompareRouter = require('./router/CompareRouter');
 
+const copsOption = {
+    //origin : ['https://www.sizelity.com','https://official.sizelity.com'],
+    origin: 'http://localhost:3000',
+    credentials :true
+}
 
 /* ================================
             Server start
 ================================ */
-const server = express();
+const server = express();   
 server.use(passport.initialize());
 
 server.use(express.static('public'));
 server.use(cookieParser({secret: 'rererere'}));
 
-
-server.use(cors({
-    //origin: 'https://www.sizelity.com',
-    origin: 'http://localhost:3000',
-    //origin: true,
-    //origin : '*',
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH','OPTIONS'],
-    credentials: true
-}));
-
+server.use(cors(copsOption));
 server.use(express.json());
-server.options('/*', (req, res) => {
-    //res.header("Access-Control-Allow-Origin", "https://www.sizelity.com");
-    res.header("Access-Control-Allow-Origin", "localhost:3000");
-    res.header("Access-Control-Allow-Header", "X-Requested-With");
-    res.header("Access-Control-Allow-Methods","GET, PUT, POST, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Credentials", 'true');
-
-    res.sendStatus(200);
-});
-
-// server.use('path', corsCheckFunc(), (res,req,next) => {}); 이렇게 사용하는게 더 좋아보임
 
 server.get('/healthCheck', (req, res) => {
     res.writeHead(200, {"Content-Type": "text/html"});
@@ -60,6 +48,7 @@ server.get('/healthCheck', (req, res) => {
 
 
 server.use('/auth', AuthRouter);
+server.use('/reservation', ReservationRouter);
 server.use('/after', passport.authenticate('jwt', {session: false}), (req, res, next) => {
     if(req.isAuthenticated()) next();
     else res.status(401).send({error : "로그인 후 이용가능 합니다"});
@@ -70,14 +59,22 @@ server.use('/user', passport.authenticate('jwt', {session: false}), (req, res, n
     if(req.isAuthenticated()) next();
     else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
 },UserRouter); // /user
+server.use('/compare', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+    if(req.isAuthenticated()) next();
+    else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
+}, CompareRouter);
 
 server.use('/notice', passport.authenticate('jwt', {session: false}), (req, res, next) => {
     if(req.isAuthenticated()) next();
     else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
 }, NoticeRouter);
-server.use('/ad', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+server.use('/improvement', passport.authenticate('jwt', {session: false}), (req, res, next) => {
     if(req.isAuthenticated()) next();
     else {res.status(401).send({error : "로그인 후 이용가능 합니다"});}
-}, ADRouter);
+}, ImprovementRouter);
+server.use('/ad', ADRouter);
 
-module.exports = server;
+const port = 3001;
+
+server.listen(port);
+console.info(`============ SERVER START :  on ${port} =================`)

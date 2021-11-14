@@ -11,11 +11,9 @@ async function getList({type, count, target}) {
         if(target === undefined) events = await EventModel.find({type}).populate('shopRef').limit(EVENT_MAX_COUNT).skip(Number(count));
         else events = await EventModel.find({type, target}).populate('shopRef', ['sname']).limit(EVENT_MAX_COUNT).skip(Number(count));
         
-        console.log(events);
         if(events === null || events?.length === 0) return StatusCode.noData; // 204
         else return events;
     } catch(err) {
-        console.log(err);
         return StatusCode.error; // 500
     }
 }

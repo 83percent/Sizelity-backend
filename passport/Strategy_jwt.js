@@ -27,7 +27,6 @@ const options = {
 }
 
 passport.use(new JwtStrategy(options, async (payload, done) => {
-    //console.log("읽어온 'payload' : ",payload);
     const {id, provider} = payload;
     await UserModel.findOne({_id : id, provider}, function(err, user) {
         if(err) return done(err, false);

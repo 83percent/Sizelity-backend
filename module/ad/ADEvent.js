@@ -11,11 +11,10 @@ async function getList({type, target}) {
         
         if(events === null || events?.length === 0) return StatusCode.noData; // 204
         else return events;
-    } catch {
+    } catch(error) {
         return StatusCode.error; // 500
     }
 }
-
 module.exports = {
     getList
 }
