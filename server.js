@@ -24,7 +24,7 @@ const CompareRouter = require('./router/CompareRouter');
 
 const copsOption = {
     //origin : ['https://www.sizelity.com','https://official.sizelity.com'],
-    origin: 'http://localhost:3000',
+    origin: 'http://192.168.11.2:3000',
     credentials :true
 }
 

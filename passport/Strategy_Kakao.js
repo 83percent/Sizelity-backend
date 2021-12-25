@@ -23,7 +23,7 @@ passport.use(
         {
             clientID : "ced3569154a58ffeff21de9254c5c836",
             clientSecret : "",
-            callbackURL : 'http://localhost:3001/auth/kakao/callback',
+            callbackURL : 'http://192.168.11.2:3001/auth/kakao/callback',
         },
         async (accessToken, refreshToken, profile, done) => {
             const {
@@ -56,14 +56,14 @@ router.get('/', passport.authenticate('kakao'));
 
 router.get('/callback', passport.authenticate('kakao', {
     session: false,
-    failureRedirect: "http://localhost:3000",
+    failureRedirect: "http://192.168.11.2:3000",
 }), async (req, res) => {
     const token = await createJWT({id: req.user.id, provider: 'kakao'});
     if(token) {
         //res.cookie('sizelity_token',token);
-        res.redirect(`http://localhost:3000/login/auth?valid=${token}`);
+        res.redirect(`http://192.168.11.2:3000/login/auth?valid=${token}`);
     } else {
-        res.redirect("http://localhost:3000/login/auth");
+        res.redirect("http://192.168.11.2:3000/login/auth");
     }
     req.logout();
 });
